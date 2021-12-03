@@ -20,7 +20,7 @@ export class Maintenance {
   @Column()
   public description!: string;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, type: 'enum', enum: MaintenanceStatus })
   public status!: MaintenanceStatus;
 
   @CreateDateColumn()

@@ -29,7 +29,7 @@ class MaintenanceRepository implements IMaintenanceRepository {
 
     if (!user) throw new Error('Usuário inválido.');
 
-    const maintenances = await repository.find({ where: { user: user } });
+    const maintenances = await repository.find({ where: { user } });
 
     return maintenances;
   }

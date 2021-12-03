@@ -8,7 +8,7 @@ enum StageStatus {
   'Etapa finalizada',
 }
 
-enum StageType {
+export enum StageType {
   'Etapa de texto' = 1,
   'Etapa de número',
   'Etapa de foto',
@@ -25,14 +25,14 @@ export class Stage {
   @Column()
   public description!: string;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, type: 'enum', enum: StageStatus })
   public status!: StageStatus;
 
-  @Column()
+  @Column({ type: 'enum', enum: StageType })
   public type!: StageType;
 
-  @Column()
-  public value!: string;
+  @Column({ type: 'varchar' })
+  public value!: string | number;
 
   @CreateDateColumn()
   public createdAt!: Date;
