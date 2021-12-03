@@ -8,9 +8,9 @@ export async function isTokenValid(req: Request, res: Response, next: NextFuncti
   try {
     if (!authorization) throw new Error('Usuário não autenticado');
 
-    const login = await auth.validate(authorization);
+    const { id } = await auth.validateToken(authorization);
 
-    req.user = login;
+    req.userId = id;
 
     next();
   } catch (err) {

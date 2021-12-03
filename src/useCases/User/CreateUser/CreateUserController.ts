@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 
-import { User } from '../../../entities/User';
 import { CreateUserUseCase } from './CreateUserUseCase';
 
 export class CreateUserController {
@@ -9,16 +8,12 @@ export class CreateUserController {
   public async handle(req: Request, res: Response): Promise<Response> {
     const { login, password } = req.body;
 
-    const user = new User();
-
-    Object.assign(user, { login, password });
-
     try {
-      await this.createUserUseCase.execute(user);
+      await this.createUserUseCase.execute({ login, password });
 
-      return res.status(201).json(user);
+      return res.status(201).json({ message: 'Usuário criado.' });
     } catch (err) {
-      return res.status(400).json({ message: err.message || 'Unexpected error.' });
+      return res.status(400).json({ message: err.message || 'Erro inesperado.' });
     }
   }
 }

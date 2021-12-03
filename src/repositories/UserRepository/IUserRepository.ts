@@ -1,8 +1,8 @@
 import { User } from '../../entities/User';
-import { IAuthenticateUserDTO } from '../../useCases/User/AuthenticateUser/AuthenticateUserDTO';
+import { ICreateUserDTO } from '../../useCases/User/CreateUser/CreateUserDTO';
+import { IAuthenticationDTO } from '../../useCases/Authentication/AuthenticationDTO';
 
 export interface IUserRepository {
-  createAndSave(user: User): Promise<void>;
-  alreadyExists(login: string): Promise<boolean>;
-  authenticate(user: IAuthenticateUserDTO): Promise<User>;
+  createAndSave(dto: ICreateUserDTO): Promise<void>;
+  authenticate(dto: IAuthenticationDTO): Promise<User>;
 }

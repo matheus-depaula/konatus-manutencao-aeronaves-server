@@ -1,19 +1,15 @@
-import { User } from '../../../entities/User';
-import { IUserRepository } from '../../../repositories/UserRepository/IUserRepository';
 import { regex } from '../../../utils/Regex';
+import { ICreateUserDTO } from './CreateUserDTO';
+import { IUserRepository } from '../../../repositories/UserRepository/IUserRepository';
 
 export class CreateUserUseCase {
   constructor(private userRepository: IUserRepository) {}
 
-  async execute(user: User): Promise<void> {
-    const isLoginValid = regex.validateLogin(user.login);
+  async execute(dto: ICreateUserDTO): Promise<void> {
+    const isLoginValid = regex.validateLogin(dto.login);
 
-    if (!isLoginValid) throw new Error('Login inválido');
+    if (!isLoginValid) throw new Error('Usuário inválido.');
 
-    const loginAlreadyExists = await this.userRepository.alreadyExists(user.login);
-
-    if (loginAlreadyExists) throw new Error('Login já cadastrado');
-
-    await this.userRepository.createAndSave(user);
+    await this.userRepository.createAndSave(dto);
   }
 }

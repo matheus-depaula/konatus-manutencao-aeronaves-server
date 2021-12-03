@@ -20,7 +20,7 @@ export class Stage {
   public readonly id!: string;
 
   @ManyToOne(() => Maintenance, maintenance => maintenance.stages)
-  public readonly maintenance!: Maintenance;
+  public maintenance!: Maintenance;
 
   @Column()
   public description!: string;

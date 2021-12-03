@@ -1,28 +1,37 @@
-import jwt from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
+
+import { User } from '../entities/User';
+
+interface Payload {
+  id: string;
+  login: string;
+}
 
 class Auth {
   private readonly secret: string = process.env.TOKEN_SECRET;
 
-  public generate(login: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      jwt.sign(login, this.secret, (err, bearer) => {
+  public generateToken(user: User): Promise<string> {
+    const payload: Payload = { id: user.id, login: user.login };
+
+    return new Promise((resolve, reject) =>
+      sign(payload, this.secret, (err: Error, bearer: string) => {
         if (err) reject(new Error(err.message));
 
         resolve(`Bearer ${bearer}`);
-      });
-    });
+      })
+    );
   }
 
-  public validate(bearer: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const token = bearer.replace('Bearer ', '');
+  public validateToken(bearer: string): Promise<User> {
+    const token = bearer.replace('Bearer ', '');
 
-      jwt.verify(token, this.secret, (err, login) => {
+    return new Promise((resolve, reject) =>
+      verify(token, this.secret, (err: Error, user: Payload) => {
         if (err) reject(new Error(err.message));
 
-        resolve(login as any);
-      });
-    });
+        resolve(user as any);
+      })
+    );
   }
 }
 

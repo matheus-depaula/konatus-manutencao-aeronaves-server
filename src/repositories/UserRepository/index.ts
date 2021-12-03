@@ -2,36 +2,25 @@ import { EntityRepository, getRepository } from 'typeorm';
 
 import { User } from '../../entities/User';
 import { IUserRepository } from './IUserRepository';
-import { IAuthenticateUserDTO } from '../../useCases/User/AuthenticateUser/AuthenticateUserDTO';
+import { IAuthenticationDTO } from '../../useCases/Authentication/AuthenticationDTO';
+import { ICreateUserDTO } from '../../useCases/User/CreateUser/CreateUserDTO';
 
 @EntityRepository(User)
 class UserRepository implements IUserRepository {
-  public async createAndSave(user: User): Promise<void> {
-    const _user = new User();
+  public async createAndSave(dto: ICreateUserDTO): Promise<void> {
+    const repository = getRepository(User);
 
-    Object.assign(user, user);
+    const userAlreadyExists = await repository.findOne({ where: { login: dto.login } });
 
-    try {
-      await getRepository(User).save(_user);
-    } catch (err) {
-      console.log(err.message);
-    }
+    if (userAlreadyExists) throw new Error('Usuário já cadastrado.');
+
+    const user = repository.create(dto);
+
+    await repository.save(user);
   }
 
-  public async alreadyExists(login: string): Promise<boolean> {
-    try {
-      return !!(await getRepository(User).findOne({ where: { login } }));
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
-  public async authenticate(user: IAuthenticateUserDTO): Promise<User> {
-    try {
-      return await getRepository(User).findOne({ where: { ...user } });
-    } catch (err) {
-      console.log(err.message);
-    }
+  public async authenticate(dto: IAuthenticationDTO): Promise<User> {
+    return await getRepository(User).findOne({ where: { ...dto } });
   }
 }
 

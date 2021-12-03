@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { AuthenticateUserUseCase } from './AuthenticateUserUseCase';
+import { AuthenticationUseCase } from './AuthenticationUseCase';
 
-export class AuthenticateUserController {
-  constructor(private authenticateUserUseCase: AuthenticateUserUseCase) {}
+export class AuthenticationController {
+  constructor(private authenticateUserUseCase: AuthenticationUseCase) {}
 
   public async handle(req: Request, res: Response): Promise<Response> {
     const { login, password } = req.body;
@@ -12,7 +12,7 @@ export class AuthenticateUserController {
 
       return res.set('Authorization', token).status(200).json({ login });
     } catch (err) {
-      return res.status(400).json({ message: err.message || 'Unexpected error.' });
+      return res.status(400).json({ message: err.message || 'Erro inesperado.' });
     }
   }
 }

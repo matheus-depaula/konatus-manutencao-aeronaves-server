@@ -1,7 +1,8 @@
 import { Router } from 'express';
+import { authenticationController } from '../useCases/Authentication';
 
-const commonRouter = Router();
+const router = Router();
 
-commonRouter.get('/', (req, res) => res.send('Hello World'));
+router.post('/auth', (req, res) => authenticationController.handle(req, res));
 
-export { commonRouter };
+export { router as commonRouter };

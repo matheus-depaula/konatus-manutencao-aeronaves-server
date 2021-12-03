@@ -15,7 +15,7 @@ export class Maintenance {
   public readonly id!: string;
 
   @ManyToOne(() => User, user => user.maintenances)
-  public readonly user!: User;
+  public user!: User;
 
   @Column()
   public description!: string;
