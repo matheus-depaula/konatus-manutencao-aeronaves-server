@@ -13,7 +13,7 @@ export class AuthenticationUseCase {
 
     const user = await this.userRepository.authenticate(dto);
 
-    if (!user) throw new Error('Usuário e/ou senha incorreto');
+    if (!user) throw new Error('Usuário e/ou senha incorreto.');
 
     const token = await auth.generateToken(user);
 
