@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
 import { Maintenance } from '../../../entities/Maintenance';
-import { ListMaintenancesUseCase } from './ListMaintenancesUseCase';
+import { GetMaintenanceUseCase } from './GetMaintenanceUseCase';
 
-export class ListMaintenancesController {
-  constructor(private listMaintenanceUseCase: ListMaintenancesUseCase) {}
+export class GetMaintenanceController {
+  constructor(private getMaintenanceUseCase: GetMaintenanceUseCase) {}
 
   public async handle(req: Request, res: Response): Promise<Response<Maintenance[]>> {
+    const { id } = req.params;
+
     try {
-      const maintenances = await this.listMaintenanceUseCase.execute();
+      const maintenances = await this.getMaintenanceUseCase.execute({ id });
 
       return res.json(maintenances);
     } catch (err) {

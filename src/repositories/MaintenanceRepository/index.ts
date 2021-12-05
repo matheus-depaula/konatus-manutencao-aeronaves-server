@@ -4,7 +4,7 @@ import { User } from '../../entities/User';
 import { Maintenance } from '../../entities/Maintenance';
 import { IMaintenanceRepository } from './IMaintenanceRepository';
 import { ICreateMaintenanceDTO } from '../../useCases/Maintenance/CreateMaintenance/CreateMaintenanceDTO';
-import { IListMaintenanceDTO } from '../../useCases/Maintenance/ListMaintenances/ListMaintenancesDTO';
+import { IGetMaintenanceDTO } from '../../useCases/Maintenance/GetMaintenance/GetMaintenanceDTO';
 
 @EntityRepository(Maintenance)
 class MaintenanceRepository implements IMaintenanceRepository {
@@ -21,17 +21,31 @@ class MaintenanceRepository implements IMaintenanceRepository {
     await repository.save(maintenance);
   }
 
-  public async listByUser(dto: IListMaintenanceDTO): Promise<Maintenance[]> {
+  public async listAll(): Promise<Maintenance[]> {
     const repository = getRepository(Maintenance);
-    const userRepository = getRepository(User);
 
-    const user = await userRepository.findOne({ where: { id: dto.userId } });
-
-    if (!user) throw new Error('Usuário inválido.');
-
-    const maintenances = await repository.find({ where: { user } });
+    const maintenances = await repository
+      .createQueryBuilder('m')
+      .select(['m.id', 'm.description', 'm.status', 'm.createdAt', 'user.login'])
+      .leftJoin('m.user', 'user')
+      .orderBy('m.createdAt', 'DESC')
+      .getMany();
 
     return maintenances;
+  }
+
+  public async findById(dto: IGetMaintenanceDTO): Promise<Maintenance> {
+    const repository = getRepository(Maintenance);
+
+    const maintenance = await repository
+      .createQueryBuilder('m')
+      .where({ id: dto.id })
+      .select(['m.id', 'm.description', 'm.status', 'm.createdAt', 'u.id', 'u.login', 's'])
+      .leftJoin('m.user', 'u')
+      .leftJoin('m.stages', 's')
+      .getOne();
+
+    return maintenance;
   }
 }
 
