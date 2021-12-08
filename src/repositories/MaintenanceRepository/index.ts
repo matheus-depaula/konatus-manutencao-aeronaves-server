@@ -5,6 +5,7 @@ import { Maintenance } from '../../entities/Maintenance';
 import { IMaintenanceRepository } from './IMaintenanceRepository';
 import { ICreateMaintenanceDTO } from '../../useCases/Maintenance/CreateMaintenance/CreateMaintenanceDTO';
 import { IGetMaintenanceDTO } from '../../useCases/Maintenance/GetMaintenance/GetMaintenanceDTO';
+import { IFinishMaintenanceDTO } from '../../useCases/Maintenance/FinishMaintenance/FinishMaintenanceDTO';
 
 @EntityRepository(Maintenance)
 class MaintenanceRepository implements IMaintenanceRepository {
@@ -43,9 +44,26 @@ class MaintenanceRepository implements IMaintenanceRepository {
       .select(['m.id', 'm.description', 'm.status', 'm.createdAt', 'u.id', 'u.login', 's'])
       .leftJoin('m.user', 'u')
       .leftJoin('m.stages', 's')
+      .orderBy('s.createdAt', 'ASC')
       .getOne();
 
     return maintenance;
+  }
+
+  public async finish(dto: IFinishMaintenanceDTO): Promise<void> {
+    const repository = getRepository(Maintenance);
+
+    let maintenance = await repository.findOne({ where: { id: dto.id }, relations: ['user'] });
+
+    if (!maintenance) throw new Error('Manutenção inválida.');
+
+    if (maintenance.user.id !== dto.userId) throw new Error('Usuário não autorizado.');
+
+    if (maintenance.status === 1) throw new Error('Manutenção já finalizada.');
+
+    maintenance.status = 1;
+
+    await repository.save(maintenance);
   }
 }
 

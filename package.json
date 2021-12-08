@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsnd --respawn --transpile-only -- src/server.ts",
+    "build": "rimraf ./build && tsc",
     "typeorm": "tsnd --transpile-only ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
     "@types/jsonwebtoken": "^8.5.6",
     "@types/node": "^16.11.11",
     "@types/uuid": "^8.3.3",
+    "rimraf": "^3.0.2",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.5.2"
   }

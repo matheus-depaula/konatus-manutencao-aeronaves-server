@@ -6,10 +6,10 @@ export class CreateStageController {
   constructor(private createStageUseCase: CreateStageUseCase) {}
 
   public async handle(req: Request, res: Response): Promise<Response> {
-    const { description, type, value, maintenanceId } = req.body as ICreateStageDTO;
+    const { description, type, maintenanceId } = req.body as ICreateStageDTO;
 
     try {
-      await this.createStageUseCase.execute({ description, type, value, maintenanceId });
+      await this.createStageUseCase.execute({ description, type, maintenanceId });
 
       return res.status(201).json({ message: 'Etapa criada.' });
     } catch (err) {

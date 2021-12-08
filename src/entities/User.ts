@@ -8,7 +8,7 @@ export class User {
   @PrimaryColumn()
   public readonly id!: string;
 
-  @Column()
+  @Column({ unique: true })
   public login!: string;
 
   @Column()

@@ -1,5 +1,4 @@
 import { auth } from '../../auth';
-import { regex } from '../../utils/Regex';
 import { IAuthenticationDTO } from './AuthenticationDTO';
 import { IUserRepository } from '../../repositories/UserRepository/IUserRepository';
 
@@ -7,9 +6,9 @@ export class AuthenticationUseCase {
   constructor(private userRepository: IUserRepository) {}
 
   async execute(dto: IAuthenticationDTO): Promise<string> {
-    const isLoginValid = regex.validateLogin(dto.login);
+    const login = dto.login.trim();
 
-    if (!isLoginValid) throw new Error('Login inválido');
+    if (!RegExp(/^[a-zA-Z]+$/).test(login)) throw new Error('Login inválido');
 
     const user = await this.userRepository.authenticate(dto);
 

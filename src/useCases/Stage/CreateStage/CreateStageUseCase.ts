@@ -5,9 +5,13 @@ export class CreateStageUseCase {
   constructor(private stageRepository: IStageRepository) {}
 
   public async execute(dto: ICreateStageDTO): Promise<void> {
-    if (dto.type === 2 && isNaN(+dto.value)) throw new Error('Valor não é um número.');
+    const description = dto.description.trim();
 
-    if (dto.value.toString().length <= 0) throw new Error('Valor inválido.');
+    if (![1, 2, 3].includes(dto.type)) throw new Error('Tipo inválido.');
+
+    if (!description) throw new Error('Descrição inválida.');
+
+    if (description.length < 4) throw new Error('Descrição deve ter pelo menos 4 caracteres.');
 
     await this.stageRepository.createAndSave(dto);
   }

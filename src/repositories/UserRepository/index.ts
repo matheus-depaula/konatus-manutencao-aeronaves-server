@@ -20,7 +20,9 @@ class UserRepository implements IUserRepository {
   }
 
   public async authenticate(dto: IAuthenticationDTO): Promise<User> {
-    return await getRepository(User).findOne({ where: { ...dto } });
+    const repository = getRepository(User);
+
+    return await repository.findOne({ where: { ...dto } });
   }
 }
 

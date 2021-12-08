@@ -31,8 +31,8 @@ export class Stage {
   @Column({ type: 'enum', enum: StageType })
   public type!: StageType;
 
-  @Column({ type: 'varchar' })
-  public value!: string | number;
+  @Column({ type: 'varchar', nullable: true })
+  public value: string | number;
 
   @CreateDateColumn()
   public createdAt!: Date;
